@@ -1,0 +1,14 @@
+table,th,td{
+    border: 2px solid white;
+    background-color: rgba(58, 83, 105, 0.438);
+    
+}
+td,th{
+    padding-left: 40px;
+    font-size: 20px;
+}
+h3{
+    text-align: center;
+    margin-top: 30px;
+    background-color: rgba(250, 235, 215, 0.219);
+}
