@@ -8,6 +8,9 @@ export class DataService {
 
   //Login username
   currentUsername:any
+
+  //Login Acno
+  currentAcno:any
   // data base
   userDetails: any = {
     1000: { acno: 1000, username: 'Neer', password: 1000, balance: 5000,transaction:[] },
@@ -31,7 +34,7 @@ export class DataService {
         username,
         password,
         balance: 0,
-        transaction: []
+        transaction:[]
       }
       console.log(userDetails);
 
@@ -48,6 +51,8 @@ export class DataService {
     if (acno in userDetails) {
       if (pswd == userDetails[acno]['password']) {
 this.currentUsername = userDetails[acno]['username']
+this.currentAcno = acno
+
         return true
       }
       else {
@@ -69,8 +74,10 @@ this.currentUsername = userDetails[acno]['username']
     if (acno in userDetails) {
       if (pswd == userDetails[acno]['password']) {
         userDetails[acno]['balance'] += amount
-
-
+        userDetails[acno]['transaction'].push({
+          type:'CREDIT',
+          amount
+        })
         console.log(userDetails);
         return userDetails[acno]['balance']
 
@@ -94,6 +101,10 @@ var amount = parseInt(amt)
       if (pswd == userDetails[acno]['password']) {
         if(userDetails[acno]['balance']>amount ){
           userDetails[acno]['balance'] -= amount
+          userDetails[acno]['transaction'].push({
+            type:'DEBIT',
+            amount
+          })
           console.log(userDetails);
           return userDetails[acno]['balance']
         }
@@ -113,6 +124,12 @@ var amount = parseInt(amt)
       return false
     }
 
+  }
+
+
+  //transaction 
+  getTransaction(acno:any){
+    return this.userDetails[acno]['transaction']
   }
 
 }
