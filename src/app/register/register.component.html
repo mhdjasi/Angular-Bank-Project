@@ -35,6 +35,8 @@
                           <input name="acno" formControlName="acno"  type="text" class="form-control" placeholder="enter account number" id="login_accno" required>
                           
                       </div>
+                      <div *ngIf="this.registerForm.get('acno')?.touched&&this.registerForm.get('acno')?.errors" class="mb-2 " style="color: rgb(255, 75, 75);">Invalid Account number</div>
+
                       <div class="input-group form-group">
                           <div class="input-group-prepend">
                               <span class="input-group-text"><i class="fas fa-key"></i></span>
@@ -44,7 +46,8 @@
                           <!-- [(ngModel)]="pswd" -->
                           <input name="pswd" formControlName="pswd"  type="password" class="form-control" placeholder="enter password" id="login_password" required>
                       </div>
-                      
+                      <div *ngIf="this.registerForm.get('pswd')?.touched&&this.registerForm.get('pswd')?.errors" class="mb-2 " style="color: rgb(255, 75, 75);">Invalid Password Format</div>
+
                       <div class="form-group">
                         <!-- (click)="login(acno,pswd)" -->
                         <!-- (click)="register()" -->
