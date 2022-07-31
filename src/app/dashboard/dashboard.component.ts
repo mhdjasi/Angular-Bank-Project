@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
 
 @Component({
@@ -9,13 +10,13 @@ import { DataService } from '../services/data.service';
 })
 export class DashboardComponent implements OnInit {
 
-  acno = ""
-  pswd = ""
-  amount = ""
+  // acno = ""
+  // pswd = ""
+  // amount = ""
 
-  acno1 = ""
-  pswd1 = ""
-  amount1 = ""
+  // acno1 = ""
+  // pswd1 = ""
+  // amount1 = ""
 
   //login Username
   user = ""
@@ -36,15 +37,22 @@ export class DashboardComponent implements OnInit {
 
   })
 
+  //acno to child
+  acno:any
 
 
 
 
-  constructor(private ds: DataService, private fb: FormBuilder) {
+
+  constructor(private ds: DataService, private fb: FormBuilder,private router:Router) {
     this.user = this.ds.currentUsername
   }
 
   ngOnInit(): void {
+    if(!localStorage.getItem('currentAcno')){
+      alert('please login')
+      this.router.navigateByUrl('')
+    }
   }
 
   deposit() {
@@ -85,6 +93,20 @@ export class DashboardComponent implements OnInit {
       alert('Invaild Withdraw Form')
     }
 
+  }
+
+  //logout 
+  logout(){
+    //remove login acno from local storage
+    localStorage.removeItem('currentAcno')
+    localStorage.removeItem('currentUsername')
+    //redirect into login page
+    this.router.navigateByUrl('')
+  }
+
+  //deleteParent
+  deleteParent(){
+    this.acno = JSON.parse(localStorage.getItem('currentAcno') || '')
   }
 
 

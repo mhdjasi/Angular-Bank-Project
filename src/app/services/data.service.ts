@@ -7,19 +7,55 @@ import { Injectable } from '@angular/core';
 export class DataService {
 
   //Login username
-  currentUsername:any
+  currentUsername: any
 
   //Login Acno
-  currentAcno:any
+  currentAcno: any
   // data base
   userDetails: any = {
-    1000: { acno: 1000, username: 'Neer', password: 1000, balance: 5000,transaction:[] },
-    1001: { acno: 1001, username: 'Laisha', password: 1001, balance: 6000 ,transaction:[]},
-    1002: { acno: 1002, username: 'Vyom', password: 1002, balance: 4000 ,transaction:[]}
+    1000: { acno: 1000, username: 'Neer', password: 1000, balance: 5000, transaction: [] },
+    1001: { acno: 1001, username: 'Laisha', password: 1001, balance: 6000, transaction: [] },
+    1002: { acno: 1002, username: 'Vyom', password: 1002, balance: 4000, transaction: [] }
   }
 
 
-  constructor() { }
+  constructor() { 
+    this.getDetails()
+  }
+
+
+  //to store data in local storage
+  saveDetails() {
+    //database
+    if (this.userDetails) {
+      localStorage.setItem('userDetails', JSON.stringify(this.userDetails))
+    }
+    //login acno
+    if (this.currentAcno) {
+      localStorage.setItem('currentAcno', JSON.stringify(this.currentAcno))
+    }
+    //login username
+    if (this.currentUsername) {
+      localStorage.setItem('currentUsername', JSON.stringify(this.currentUsername))
+    }
+  }
+
+  // to get data from local storage
+  getDetails(){
+    //database
+    if(localStorage.getItem('userDetails')){
+      this.userDetails = JSON.parse(localStorage.getItem('userDetails') || '')
+    }
+    //login acno
+    if(localStorage.getItem('currentAcno')){
+      this.currentAcno = JSON.parse(localStorage.getItem('currentAcno') || '')
+    }
+    //login username
+    if(localStorage.getItem('currentUsername')){
+      this.currentUsername = JSON.parse(localStorage.getItem('currentUsername') || '')
+    }
+    
+  }
 
   //register
 
@@ -34,10 +70,11 @@ export class DataService {
         username,
         password,
         balance: 0,
-        transaction:[]
+        transaction: []
       }
-      console.log(userDetails);
-
+      // console.log(userDetails);
+      //function call of local storage
+      this.saveDetails()
       return true
 
     }
@@ -50,9 +87,10 @@ export class DataService {
 
     if (acno in userDetails) {
       if (pswd == userDetails[acno]['password']) {
-this.currentUsername = userDetails[acno]['username']
-this.currentAcno = acno
-
+        this.currentUsername = userDetails[acno]['username']
+        this.currentAcno = acno
+        //function call of local storage
+        this.saveDetails()
         return true
       }
       else {
@@ -75,10 +113,12 @@ this.currentAcno = acno
       if (pswd == userDetails[acno]['password']) {
         userDetails[acno]['balance'] += amount
         userDetails[acno]['transaction'].push({
-          type:'CREDIT',
+          type: 'CREDIT',
           amount
         })
         console.log(userDetails);
+        //function call of local storage
+        this.saveDetails()
         return userDetails[acno]['balance']
 
       }
@@ -94,21 +134,23 @@ this.currentAcno = acno
   }
 
   //withdraw
-  withdraw(acno:any,pswd:any,amt:any){
-let userDetails = this.userDetails
-var amount = parseInt(amt)
+  withdraw(acno: any, pswd: any, amt: any) {
+    let userDetails = this.userDetails
+    var amount = parseInt(amt)
     if (acno in userDetails) {
       if (pswd == userDetails[acno]['password']) {
-        if(userDetails[acno]['balance']>amount ){
+        if (userDetails[acno]['balance'] > amount) {
           userDetails[acno]['balance'] -= amount
           userDetails[acno]['transaction'].push({
-            type:'DEBIT',
+            type: 'DEBIT',
             amount
           })
           console.log(userDetails);
+          //function call of local storage
+          this.saveDetails()
           return userDetails[acno]['balance']
         }
-        else{
+        else {
           alert('Insufficient Blalance')
           return false
         }
@@ -128,7 +170,7 @@ var amount = parseInt(amt)
 
 
   //transaction 
-  getTransaction(acno:any){
+  getTransaction(acno: any) {
     return this.userDetails[acno]['transaction']
   }
 
