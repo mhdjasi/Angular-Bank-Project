@@ -68,12 +68,21 @@ userDetails:any = {
     var pswd = this.loginForm.value.pswd
 
     if(this.loginForm.valid){
-//calling login - dataService
-const result = this.ds.login(acno,pswd)
-    if(result){
-      alert('Login Successful')
-        this.router.navigateByUrl('dashboard')
-      }
+//calling login - dataService - asynchronous
+this.ds.login(acno,pswd)
+.subscribe(
+  (result:any)=>{
+    localStorage.setItem('currentUsername', JSON.stringify(result.currentUsername))
+    localStorage.setItem('currentAcno', JSON.stringify(result.currentAcno))
+    localStorage.setItem('token', JSON.stringify(result.token))
+
+  alert(result.message)
+  this.router.navigateByUrl("dashboard")
+},
+result=>{
+  alert(result.error.message)
+}
+)
 
     }
     else{

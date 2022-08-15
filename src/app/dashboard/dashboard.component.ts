@@ -40,19 +40,24 @@ export class DashboardComponent implements OnInit {
   //acno to child
   acno:any
 
+  //to hold date
+  lDate:any
+
 
 
 
 
   constructor(private ds: DataService, private fb: FormBuilder,private router:Router) {
-    this.user = this.ds.currentUsername
+    //fetch username from local storage
+    this.user = JSON.parse(localStorage.getItem('currentUsername') || '')
+    this.lDate= new Date()
   }
 
   ngOnInit(): void {
-    if(!localStorage.getItem('currentAcno')){
-      alert('please login')
-      this.router.navigateByUrl('')
-    }
+    // if(!localStorage.getItem('currentAcno')){
+    //   alert('please login')
+    //   this.router.navigateByUrl('')
+    // }
   }
 
   deposit() {
@@ -61,11 +66,17 @@ export class DashboardComponent implements OnInit {
     var amount = this.depositForm.value.amount
 
     if (this.depositForm.valid) {
-      const result = this.ds.deposit(acno, pswd, amount)
-
-      if (result) {
-        alert(`${amount} credited Successfully and new balance is ${result}`)
+      this.ds.deposit(acno, pswd, amount)
+      .subscribe(
+        //200
+        (result:any)=>{
+        alert(result.message)
+      },
+      //400
+      result=>{
+        alert(result.error.message)
       }
+      )
 
     }
     else {
@@ -82,11 +93,18 @@ export class DashboardComponent implements OnInit {
     var amount = this.withdrawForm.value.amount1
 
     if (this.withdrawForm.valid) {
-      const result = this.ds.withdraw(acno, pswd, amount)
+      this.ds.withdraw(acno, pswd, amount)
 
-      if (result) {
-        alert(`${amount} debitted Successfully and new balance is ${result}`)
+      .subscribe(
+        //200
+        (result:any)=>{
+        alert(result.message)
+      },
+      //400
+      result=>{
+        alert(result.error.message)
       }
+      )
 
     }
     else {
@@ -109,5 +127,27 @@ export class DashboardComponent implements OnInit {
     this.acno = JSON.parse(localStorage.getItem('currentAcno') || '')
   }
 
+  //cancel() - to set acno as empty
+  cancel(){
+    this.acno=""
+  }
+
+  //onDelete($event)
+  onDelete(event:any){
+
+    //asynchronous 
+    this.ds.delete(event)
+    .subscribe(
+      (result:any)=>{
+        alert(result.message)
+        //redirect into login page
+    this.router.navigateByUrl('')
+      },
+      result=>{
+        alert(result.error.message)
+      }
+    )
+    
+  }
 
 }
