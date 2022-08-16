@@ -48,16 +48,19 @@ export class DashboardComponent implements OnInit {
 
 
   constructor(private ds: DataService, private fb: FormBuilder,private router:Router) {
+
+    if(localStorage.getItem('currentUsername')){
     //fetch username from local storage
     this.user = JSON.parse(localStorage.getItem('currentUsername') || '')
+    }
     this.lDate= new Date()
   }
 
   ngOnInit(): void {
-    // if(!localStorage.getItem('currentAcno')){
-    //   alert('please login')
-    //   this.router.navigateByUrl('')
-    // }
+    if(!localStorage.getItem('token')){
+      alert('please login')
+      this.router.navigateByUrl('')
+    }
   }
 
   deposit() {
@@ -116,6 +119,7 @@ export class DashboardComponent implements OnInit {
   //logout 
   logout(){
     //remove login acno from local storage
+    localStorage.removeItem('token')
     localStorage.removeItem('currentAcno')
     localStorage.removeItem('currentUsername')
     //redirect into login page
@@ -140,8 +144,8 @@ export class DashboardComponent implements OnInit {
     .subscribe(
       (result:any)=>{
         alert(result.message)
-        //redirect into login page
-    this.router.navigateByUrl('')
+        //calling logout function to remove data from local storage
+    this.logout()
       },
       result=>{
         alert(result.error.message)
